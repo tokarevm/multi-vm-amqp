@@ -2,9 +2,11 @@
 import sys
 from pyzabbix import ZabbixAPI, ZabbixAPIException
 
-expression = "{#{hostname}:rabbitmaxq.last()}>5"
-description = "Rabbitmq queue is too long"
-priority = 4
+if len(sys.argv) == 2 and sys.argv[1].isdigit():
+	treshold=int(sys.argv[1])
+else:
+	print "Wrong parameters"
+	sys.exit()
 
 # The hostname at which the Zabbix web interface is available
 zabbix_server = 'http://localhost/zabbix'
@@ -31,7 +33,7 @@ if hosts:
                 hostid=host_id,
                 name='Rabbitmq queue length',
                 description='Rabbitmq queue length',
-                key_='rabbitmaxq',
+                key_='rabbitmaxq[%d]' % treshold,
                 type=0,
                 interfaceid=hosts[0]["interfaces"][0]["interfaceid"],
                 value_type=3,
@@ -48,7 +50,7 @@ if hosts:
             status=0,
             type=0,
             priority=3,
-            expression='{central:rabbitmaxq.last(0)}>5'
+            expression='{central:rabbitmaxq[%d].last(0)}>%d' % (treshold, treshold)
         )
     except ZabbixAPIException as e:
         print str(e)

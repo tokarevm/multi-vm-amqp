@@ -1,6 +1,9 @@
 ---
 - hosts: all
   become: yes
+  vars:
+    queue_treshold: 15
+
   tasks:
     - name: Disable SELinux
       selinux: state=disabled
@@ -92,14 +95,19 @@
         owner: apache
         group: apache
 
+    - name: Copy script that define queue length and write it to log if it great then treshold
+      copy:
+        src: files/zabbix/rabbitmq_queue.sh
+        dest: /usr/local/bin
+        owner: zabbix
+        group: zabbix
+        mode: 0755
+
     - name: Start httpd service
       service: name=httpd enabled=yes state=restarted
 
     - name: Start zabbix server
       service: name=zabbix-server enabled=yes state=restarted
-
-    - name: Start zabbix agent
-      service: name=zabbix-agent enabled=yes state=restarted
 
     - name: Enabled Zabbix host configuration
       shell: echo "update hosts set status = 0 where host like 'Zabbix server';" | mysql -uroot -pzabbix zabbix
@@ -167,4 +175,8 @@
         mode: 0755
 
     - name: Run script that create rabbitmq queue item and trigger to zabbix server
-      command: /opt/myapp/zbx_create_item_trigger.py
+      command: /opt/myapp/zbx_create_item_trigger.py {{ queue_treshold }}
+
+    - name: Start zabbix agent
+      service: name=zabbix-agent enabled=yes state=restarted
+
