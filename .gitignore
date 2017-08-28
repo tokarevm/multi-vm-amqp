@@ -50,3 +50,5 @@ doc/
 # Rubinius
 *.rbc
 
+# Swap files
+*.swp
