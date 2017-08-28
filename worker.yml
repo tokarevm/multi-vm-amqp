@@ -1,0 +1,38 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Disable SELinux
+      selinux: state=disabled
+
+    - name: Activate network interface eth1
+      shell: |
+        if [[ -f '/etc/sysconfig/network-scripts/ifcfg-eth1' && "$(grep -i -c '^BOOTPROTO=static' /etc/sysconfig/network-scripts/ifcfg-eth1)" -eq 0 ]]; then
+          sudo sed -i -e 's|BOOTPROTO=none|BOOTPROTO=static|' /etc/sysconfig/network-scripts/ifcfg-eth1 && sudo systemctl restart network
+        fi
+
+    - name: Install zabbix repo
+      yum: name=http://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/zabbix-release-3.0-1.el7.noarch.rpm state=present
+
+    - name: Install additional packages
+      yum: name="{{ item }}" state=present
+      with_items:
+        - libselinux-python
+        - python2-pika
+        - zabbix-agent
+
+    - name: Create directory for application
+      file:
+        path: /opt/myapp
+        state: directory
+        mode: 0755
+        owner: vagrant
+        group: vagrant
+
+    - name: Copy all needed files for publisher.java app
+      copy:
+        src: files/consumer/
+        dest: /opt/myapp
+
+#    - name: Run consumer
+#      shell: nohup python /opt/myapp/consumer.py 2>&1 >> /opt/myapp/consumer.log
