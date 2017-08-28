@@ -10,8 +10,8 @@
 
     - name: Activate network interface eth1
       shell: |
-        if [[ -f '/etc/sysconfig/network-scripts/ifcfg-eth1' && "$(grep -i -c '^BOOTPROTO=static' /etc/sysconfig/network-scripts/ifcfg-eth1)" -eq 0 ]]; then
-          sudo sed -i -e 's|BOOTPROTO=none|BOOTPROTO=static|' /etc/sysconfig/network-scripts/ifcfg-eth1 && sudo systemctl restart network
+        if [[ -f '/etc/sysconfig/network-scripts/ifcfg-eth1' && "$(grep -i -c '^NM_CONTROLLED' /etc/sysconfig/network-scripts/ifcfg-eth1)" -eq 0 ]]; then
+          sudo sed -i -e 's|NM_CONTROLLED=.*|NM_CONTROLLED=yes|' /etc/sysconfig/network-scripts/ifcfg-eth1 && sudo systemctl restart network
         fi
 
     - name: Install additional packages
@@ -126,7 +126,7 @@
         server_url: http://localhost/zabbix
         login_user: Admin
         login_password: zabbix
-        host_name: central
+        host_name: "{{ ansible_hostname }}"
         host_groups:
           - Linux servers
           - Zabbix servers
@@ -141,28 +141,6 @@
             main: 1
             useip: 1
             ip: 127.0.0.1
-            dns: ""
-            port: 10050
-
-    - name: Add worker host to zabbix configuration
-      local_action:
-        module: zabbix_host
-        server_url: http://localhost/zabbix
-        login_user: Admin
-        login_password: zabbix
-        host_name: worker
-        host_groups:
-          -   Linux servers
-        link_templates:
-          - Template OS Linux
-        status: enabled
-        state: present
-        inventory_mode: automatic
-        interfaces:
-          - type: 1
-            main: 1
-            useip: 1
-            ip: 10.0.0.11
             dns: ""
             port: 10050
 

@@ -52,3 +52,6 @@ doc/
 
 # Swap files
 *.swp
+
+# Extra Vagrant VM
+/worker*/*

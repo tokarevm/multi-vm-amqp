@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  box = "centos/7"
+
+	#Setup hostmanager config to update the host files
+	config.hostmanager.enabled = true
+  	config.hostmanager.manage_host = true
+  	config.hostmanager.ignore_private_ip = false
+  	config.hostmanager.include_offline = true
+  	config.vm.provision :hostmanager
+
+	config.vm.define :worker do |worker_config|
+		worker_config.vm.box = box
+		worker_config.vm.hostname = "worker01"
+	    config.vm.provider :virtualbox do |vb|
+        	vb.name = "worker"
+	    end
+		worker_config.vm.network "private_network", ip: "10.0.0.12"
+        worker_config.vm.provision "ansible_local" do |ansible|
+            ansible.playbook = "worker.yml"
+        end
+
+	end
+end

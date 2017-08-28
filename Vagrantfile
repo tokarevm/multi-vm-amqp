@@ -34,9 +34,8 @@ Vagrant.configure("2") do |config|
 
 	config.vm.define :worker do |worker_config|
 		worker_config.vm.box = box
-		worker_config.vm.hostname = "worker"
-		worker_config.vm.network "private_network", ip: "10.0.0.11"
 		worker_config.vm.hostname = "worker.local"
+		worker_config.vm.network "private_network", ip: "10.0.0.11"
 
         worker_config.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "worker.yml"

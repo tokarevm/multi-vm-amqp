@@ -88,6 +88,6 @@
         dest: /opt/myapp
 
     - name: Run consumer
-      shell: nohup python -u /opt/myapp/consumer.py >> /opt/myapp/consumer.py &
+      shell: nohup python -u /opt/myapp/consumer.py > /opt/myapp/consumer.log &
       become: yes
       become_user: vagrant

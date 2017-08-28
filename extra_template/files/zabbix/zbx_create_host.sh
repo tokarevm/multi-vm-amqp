@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script creates new host configuration in zabbix server
 
-URL='http://localhost/zabbix/api_jsonrpc.php'
+URL='http://central/zabbix/api_jsonrpc.php'
 HEADER='Content-Type:application/json'
 
 USER='"zabbix"'
