@@ -21,6 +21,16 @@
         - python2-pika
         - zabbix-agent
 
+    - name: Configure zabbix agent
+      lineinfile:
+        path: /etc/zabbix/zabbix_agentd.conf
+        state: present
+        regexp: '^Server='
+        line: 'Server=central'
+
+    - name: Start zabbix agent
+      service: name=zabbix-agent enabled=yes state=restarted
+
     - name: Create directory for application
       file:
         path: /opt/myapp

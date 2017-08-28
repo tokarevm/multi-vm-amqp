@@ -110,3 +110,27 @@
         state: present
         regexp: '^zabbix'
         line: 'zabbix  ALL=(ALL)       NOPASSWD: /usr/sbin/rabbitmqctl list_queues'
+        validate: 'visudo -cf %s'
+
+    - name: Add worker host to zabbix configuration
+      local_action:
+        module: zabbix_host
+        server_url: http://localhost/zabbix
+        login_user: Admin
+        login_password: zabbix
+        host_name: worker
+        host_groups:
+          -   Linux servers
+        link_templates:
+          - Template OS Linux
+        status: enabled
+        state: present
+        inventory_mode: automatic
+        interfaces:
+          - type: 1
+            main: 1
+            useip: 1
+            ip: 10.0.0.11
+            dns: ""
+            port: 10050
+
