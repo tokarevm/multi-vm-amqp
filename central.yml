@@ -112,6 +112,30 @@
         line: 'zabbix  ALL=(ALL)       NOPASSWD: /usr/sbin/rabbitmqctl list_queues'
         validate: 'visudo -cf %s'
 
+    - name: Add central host to zabbix configuration
+      local_action:
+        module: zabbix_host
+        server_url: http://localhost/zabbix
+        login_user: Admin
+        login_password: zabbix
+        host_name: central
+        host_groups:
+          - Linux servers
+          - Zabbix servers
+        link_templates:
+          - Template App Zabbix Server
+          - Template OS Linux
+        status: enabled
+        state: present
+        inventory_mode: automatic
+        interfaces:
+          - type: 1
+            main: 1
+            useip: 1
+            ip: 127.0.0.1
+            dns: ""
+            port: 10050
+
     - name: Add worker host to zabbix configuration
       local_action:
         module: zabbix_host
@@ -134,3 +158,13 @@
             dns: ""
             port: 10050
 
+    - name: Copy script that create rabbitmq queue item and trigger to zabbix server
+      copy:
+        src: files/zabbix/zbx_create_item_trigger.py
+        dest: /opt/myapp
+        owner: vagrant
+        group: vagrant
+        mode: 0755
+
+    - name: Run script that create rabbitmq queue item and trigger to zabbix server
+      command: /opt/myapp/zbx_create_item_trigger.py
