@@ -16,17 +16,33 @@ This boxes contain a vagrant / ansible recipe that allows to create a develop en
 
 ### RabbitMQ
 
-host: 10.0.0.10
+host: 10.0.0.10  
 port: 5672
 
 ### Zabbix server
 
-host: 10.0.0.10
+host: 10.0.0.10  
 port 10050
 
 ### Zabbix web management
 
-URL: http://localhost:8080/zabbix
-username: Admin
-password: zabbix
+URL: http://localhost:8080/zabbix  
+username: Admin  
+password: zabbix  
+  
+Central host has item "Rabbitmq queue" that shows current rabbitmq queue length. It's updated every 10 seconds.
+
+## Installed Applications
+
+### Consumer
+
+* Login to worker host: vagrant ssh worker
+* Change directory: cd /opt/myapp/
+* Run application: python consumer.py
+
+### Publisher
+
+* Login to central host: vagrant ssh central
+* Change directory: cd /opt/myapp/
+* Run application: java -classpath .:amqp-client-4.0.2.jar:slf4j-api-1.7.21.jar:slf4j-simple-1.7.22.jar Send <number of seconds to delay>
 
