@@ -27,6 +27,9 @@ Vagrant.configure("2") do |config|
 		  	pip install ansible
 		END
 
+		vm.provision "shell",
+			inline: "sudo ifup eth1"
+
 		central_config.vm.provision "ansible_local" do |ansible|
 			ansible.playbook = "central.yml"
 		end
@@ -36,6 +39,9 @@ Vagrant.configure("2") do |config|
 		worker_config.vm.box = box
 		worker_config.vm.hostname = "worker.local"
 		worker_config.vm.network "private_network", ip: "10.0.0.11"
+
+        vm.provision "shell",
+            inline: "sudo ifup eth1"
 
         worker_config.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "worker.yml"
