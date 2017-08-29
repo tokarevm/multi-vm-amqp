@@ -8,11 +8,15 @@
     - name: Disable SELinux
       selinux: state=disabled
 
-    - name: Activate network interface eth1
-      shell: |
-        if [[ -f '/etc/sysconfig/network-scripts/ifcfg-eth1' && "$(grep -i -c '^NM_CONTROLLED' /etc/sysconfig/network-scripts/ifcfg-eth1)" -eq 0 ]]; then
-          sudo sed -i -e 's|NM_CONTROLLED=.*|NM_CONTROLLED=yes|' /etc/sysconfig/network-scripts/ifcfg-eth1 && sudo systemctl restart network
-        fi
+    - name: Change settings for private interface eth1
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-eth1
+        state: present
+        regexp: '^NM_CONTROLLED=no'
+        line: 'NM_CONTROLLED=yes'
+
+    - name: Bring up interface eth1
+      shell: ifup eth1
 
     - name: Install additional packages
       yum: name="{{ item }}" state=present
@@ -62,6 +66,9 @@
         - mariadb
         - mariadb-server
         - httpd
+
+    - name: Install extra python module for ansible zabbix_host module
+      command: pip install zabbix-api
 
     - name: Enable and run mysql service
       service: name=mariadb enabled=yes state=started
