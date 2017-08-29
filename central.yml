@@ -63,6 +63,7 @@
         - zabbix-server-mysql
         - zabbix-web-mysql
         - zabbix-agent
+        - python-pyzabbix
         - mariadb
         - mariadb-server
         - httpd
