@@ -32,16 +32,20 @@ password: zabbix
   
 Central host has item "Rabbitmq queue" that shows current rabbitmq queue length. It's updated every 10 seconds.
 
+
 ## Installed Applications
 
 ### Consumer
 
+Consumer app will start automatically after VM deployment. App log file consumer.log is located in the /opt/myapp/ directory.  
+Steps for manually start app:  
 * Login to worker host: vagrant ssh worker
 * Change directory: cd /opt/myapp/
 * Run application: python consumer.py
 
 ### Publisher
 
+Steps for manually start app:  
 * Login to central host: vagrant ssh central
 * Change directory: cd /opt/myapp/
 * Run application: java -classpath .:amqp-client-4.0.2.jar:slf4j-api-1.7.21.jar:slf4j-simple-1.7.22.jar Send <number of seconds to delay>
