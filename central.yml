@@ -52,8 +52,9 @@
         dest: /opt/myapp
 
     - name: Make stress.sh executable
-      file: /opt/myapp/stress.sh
-      mode: 0755
+      file:
+        path: /opt/myapp/stress.sh
+        mode: 0755
 
     - name: Compile java app
       shell: cd /opt/myapp && /usr/bin/javac -cp amqp-client-4.0.2.jar:slf4j-api-1.7.21.jar:slf4j-simple-1.7.22.jar /opt/myapp/Send.java
