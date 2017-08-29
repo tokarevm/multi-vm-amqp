@@ -6,7 +6,7 @@ This boxes contain a vagrant / ansible recipe that allows to create a develop en
 
 # Install
 
-* Download and install [Vagrant](http://downloads.vagrantup.com/)
+* Download and install [Vagrant](https://www.vagrantup.com/downloads.html)
 * Download and install  [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install vagrant-hostmanager plugin (vagrant plugin install vagrant-hostmanager)
 * Clone the project ```git clone https://github.com/tokarevm/multi-vm-amqp.git```
