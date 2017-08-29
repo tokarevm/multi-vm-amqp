@@ -51,6 +51,10 @@
         src: files/publisher/
         dest: /opt/myapp
 
+    - name: Make stress.sh executable
+      file: /opt/myapp/stress.sh
+      mode: 0755
+
     - name: Compile java app
       shell: cd /opt/myapp && /usr/bin/javac -cp amqp-client-4.0.2.jar:slf4j-api-1.7.21.jar:slf4j-simple-1.7.22.jar /opt/myapp/Send.java
 
@@ -162,6 +166,11 @@
 
     - name: Run script that create rabbitmq queue item and trigger to zabbix server
       command: /opt/myapp/zbx_create_item_trigger.py {{ queue_treshold }}
+
+    - name: Copy config for zabbix item Rabbitmq queue length
+      copy:
+        src: files/conf/userparameter_rabbitmq.conf
+        dest: /etc/zabbix/zabbix_agentd.d/
 
     - name: Start zabbix agent
       service: name=zabbix-agent enabled=yes state=restarted
